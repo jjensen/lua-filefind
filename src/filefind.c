@@ -575,8 +575,7 @@ static int l_filefind_first(lua_State *L) {
 	{
 		info->dirp = opendir(slashPtr ? info->path : ".");
 		if (info->dirp) {
-			if (!FileFindNextMatch(info))
-				return 0;
+			FileFindNextMatch(info)
 		}
 	}
 #endif
