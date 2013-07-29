@@ -1031,6 +1031,8 @@ static int l_filefind_FILETIME_to_time_t(lua_State* L) {
 	FILETIME fileTime;
 	FILETIME localTime;
 	SYSTEMTIME sysTime;
+	TIME_ZONE_INFORMATION tzi;
+	DWORD dst;
 	struct tm atm;
 
 	if (lua_isnumber(L, 1)  &&  lua_isnumber(L, 2)) {
@@ -1070,13 +1072,15 @@ static int l_filefind_FILETIME_to_time_t(lua_State* L) {
 		return 0;
 	}
 
+	dst = GetTimeZoneInformation(&tzi);
+
 	atm.tm_sec = sysTime.wSecond;
 	atm.tm_min = sysTime.wMinute;
 	atm.tm_hour = sysTime.wHour;
 	atm.tm_mday = sysTime.wDay;
 	atm.tm_mon = sysTime.wMonth - 1;        /* tm_mon is 0 based */
 	atm.tm_year = sysTime.wYear - 1900;     /* tm_year is 1900 based */
-	atm.tm_isdst = -1;
+	atm.tm_isdst = (int)dst - 1;
 	lua_pushnumber(L, (lua_Number)mktime(&atm));
 	return 1;
 }
