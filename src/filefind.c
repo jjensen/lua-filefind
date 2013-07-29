@@ -382,7 +382,7 @@ static int filefind_index_number_of_links(lua_State* L) {
 }
 
 
-static int filefind_index_table_helper(lua_State* L, struct FileFindInfo* info) {
+static int filefind_index_table_helper(lua_State* L, struct FileFindInfo* info, int simple_query) {
 	lua_newtable(L);
 	filefind_index_filename_helper(L, info);
 	lua_setfield(L, -2, "filename");
@@ -406,15 +406,18 @@ static int filefind_index_table_helper(lua_State* L, struct FileFindInfo* info) 
 	lua_setfield(L, -2, "is_link");
 	filefind_index_is_readonly_helper(L, info);
 	lua_setfield(L, -2, "is_readonly");
-	filefind_index_number_of_links_helper(L, info);
-	lua_setfield(L, -2, "number_of_links");
+
+	if (!simple_query) {
+		filefind_index_number_of_links_helper(L, info);
+		lua_setfield(L, -2, "number_of_links");
+	}
 	return 1;
 }
 
 
 static int filefind_index_table(lua_State* L) {
 	struct FileFindInfo* info = filefind_checkmetatable(L, 1);
-	return filefind_index_table_helper(L, info);
+	return filefind_index_table_helper(L, info, 1);
 }
 
 
@@ -633,7 +636,7 @@ static int l_filefind_attributes(lua_State* L) {
 	if (!info->dirp)
 		return 0;
 #endif
-	filefind_index_table_helper(L, info);
+	filefind_index_table_helper(L, info, 1);
 	filefind_close_helper(L, info);
 	return 1;
 }
