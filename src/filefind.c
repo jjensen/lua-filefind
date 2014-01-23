@@ -1148,6 +1148,17 @@ static int l_filefind_time_t_to_FILETIME(lua_State* L) {
 #endif // WIN32
 
 
+static int l_filefind_pattern_match(lua_State *L) {
+  const char *pattern = luaL_checkstring(L, 1);
+  const char *string = luaL_checkstring(L, 2);
+  int caseSensitive = lua_isboolean(L, 3) ? lua_toboolean(L, 3) : 0;
+  int recursive = lua_isboolean(L, 4) ? lua_toboolean(L, 4) : 1;
+
+  lua_pushboolean(L, fileglob_WildMatch(pattern, string, caseSensitive, recursive));
+  return 1;
+}
+
+
 static const struct luaL_Reg filefind_lib[] = {
 	{ "attributes", l_filefind_attributes },
 	{ "first", l_filefind_first },
@@ -1159,6 +1170,7 @@ static const struct luaL_Reg filefind_lib[] = {
 	{ "FILETIME_to_time_t", l_filefind_FILETIME_to_time_t },
 	{ "time_t_to_FILETIME",	l_filefind_time_t_to_FILETIME },
 #endif // WIN32
+	{ "pattern_match", l_filefind_pattern_match },
 	{NULL, NULL},
 };
 
