@@ -1026,7 +1026,7 @@ static int l_filefind_FILETIME_to_unix_time_UTC(lua_State* L) {
 		signed long long ll;
 #endif
 		ll = (((LONGLONG)(fileTime.dwHighDateTime)) << 32) + fileTime.dwLowDateTime;
-		lua_pushnumber(L, (lua_Number)((ll - 116444736000000000ui64)/10000000ui64));
+		lua_pushnumber(L, (lua_Number)((ll - 116444736000000000ULL)/10000000ULL));
 	}
 
 	return 1;
@@ -1040,7 +1040,7 @@ static int l_filefind_unix_time_to_FILETIME_UTC(lua_State* L) {
 #else
 		signed long long ll;
 #endif
-	ll = Int32x32To64(unixTime, 10000000) + 116444736000000000ui64;
+	ll = Int32x32To64(unixTime, 10000000) + 116444736000000000ULL;
 	lua_pushnumber(L, (DWORD)ll);
 	lua_pushnumber(L, (DWORD)(ll >> 32));
 	return 2;
